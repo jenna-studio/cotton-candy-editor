@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced CodeMirror Editor</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1 id="file-name-display">File Name</h1>
+        <div class="controls">
+            <label for="language-select">Language:</label>
+            <select id="language-select">
+                <option value="javascript">JavaScript</option>
+                <option value="python">Python</option>
+                <option value="html">HTML</option>
+                <option value="css">CSS</option>
+                <option value="java">Java</option>
+                <option value="cpp">C++</option>
+                <option value="markdown">Markdown</option>
+                <option value="json">JSON</option>
+                <option value="sql">SQL</option>
+                <option value="rust">Rust</option>
+                <option value="php">PHP</option>
+                <option value="xml">XML</option>
+            </select>
+
+            <label for="theme-select">Theme:</label>
+            <select id="theme-select">
+                <option value="light">Light</option>
+                <option value="dracula">Dracula</option>
+                <option value="material-dark">Material Dark</option>
+                <option value="nord">Nord</option>
+                <option value="solarized-dark">Solarized Dark</option>
+                <option value="cotton-candy">Cotton Candy</option>
+            </select>
+
+            <button id="save-button">Save File</button>
+            <button id="format-button">Format Code</button>
+            <button id="copy-button">Copy Code</button>
+        </div>
+        <div id="editor"></div>
+    </div>
+    <script src="bundle.js"></script>
+</body>
+
+</html>
