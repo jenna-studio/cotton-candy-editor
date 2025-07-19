@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cotton Candy Editor - Embed Example</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f8f9fa;
+        }
+        
+        .demo-section {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .editor-container {
+            border: 1px solid #e9ecef;
+            border-radius: 6px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        
+        h1 { color: #d63384; }
+        h2 { color: #495057; }
+        
+        .controls {
+            margin: 10px 0;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .controls button, .controls select {
+            padding: 8px 12px;
+            border: 1px solid #d63384;
+            border-radius: 4px;
+            background: white;
+            color: #d63384;
+            cursor: pointer;
+        }
+        
+        .controls button:hover {
+            background: #d63384;
+            color: white;
+        }
+        
+        code {
+            background: #f8f9fa;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Monaco', 'Consolas', monospace;
+        }
+        
+        pre {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            overflow-x: auto;
+        }
+        
+        /* Cotton Candy Theme Styles for embedded editors */
+        .cotton-candy-cotton-candy {
+            background: #fff0f5;
+            border-radius: 6px;
+        }
+        
+        .cotton-candy-light {
+            background: #ffffff;
+            border-radius: 6px;
+        }
+        
+        .cotton-candy-dark {
+            background: #282a36;
+            border-radius: 6px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🍭 Cotton Candy Editor - Embed Examples</h1>
+    
+    <div class="demo-section">
+        <h2>Basic Embedding</h2>
+        <p>Here's a simple JavaScript editor with the Cotton Candy theme:</p>
+        <div class="editor-container">
+            <div id="editor1"></div>
+        </div>
+        
+        <div class="controls">
+            <button onclick="getCode1()">Get Code</button>
+            <button onclick="setCode1()">Set Sample Code</button>
+            <select onchange="changeTheme1(this.value)">
+                <option value="cotton-candy">Cotton Candy</option>
+                <option value="light">Light</option>
+                <option value="dracula">Dracula</option>
+                <option value="material-dark">Material Dark</option>
+            </select>
+        </div>
+    </div>
+    
+    <div class="demo-section">
+        <h2>Multiple Language Support</h2>
+        <p>Switch between different programming languages:</p>
+        <div class="editor-container">
+            <div id="editor2"></div>
+        </div>
+        
+        <div class="controls">
+            <select onchange="changeLanguage2(this.value)">
+                <option value="javascript">JavaScript</option>
+                <option value="python">Python</option>
+                <option value="html">HTML</option>
+                <option value="css">CSS</option>
+                <option value="java">Java</option>
+                <option value="rust">Rust</option>
+            </select>
+            <button onclick="copyCode2()">Copy Code</button>
+        </div>
+    </div>
+    
+    <div class="demo-section">
+        <h2>Read-Only Mode</h2>
+        <p>Perfect for displaying code snippets:</p>
+        <div class="editor-container">
+            <div id="editor3"></div>
+        </div>
+    </div>
+    
+    <div class="demo-section">
+        <h2>Compact Editor</h2>
+        <p>Minimal editor without line numbers:</p>
+        <div class="editor-container">
+            <div id="editor4" style="height: 150px;"></div>
+        </div>
+    </div>
+    
+    <div class="demo-section">
+        <h2>How to Embed</h2>
+        <p>Include the Cotton Candy Editor in your project:</p>
+        
+        <h3>1. CDN (Recommended)</h3>
+        <pre><code>&lt;!-- CSS --&gt;
+&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/yourusername/cotton-candy-editor@main/dist/editor.min.css"&gt;
+
+&lt;!-- JavaScript --&gt;
+&lt;script src="https://cdn.jsdelivr.net/gh/yourusername/cotton-candy-editor@main/dist/embed.min.js"&gt;&lt;/script&gt;</code></pre>
+        
+        <h3>2. Initialize the Editor</h3>
+        <pre><code>// Create container
+&lt;div id="my-editor"&gt;&lt;/div&gt;
+
+// Initialize editor
+const editor = new CottonCandyEditor({
+    parent: document.getElementById('my-editor'),
+    theme: 'cotton-candy',
+    language: 'javascript',
+    value: 'console.log("Hello World!");'
+});</code></pre>
+        
+        <h3>3. API Methods</h3>
+        <pre><code>// Get/Set content
+const code = editor.getValue();
+editor.setValue('new code');
+
+// Change theme/language
+editor.setTheme('cotton-candy');
+editor.setLanguage('python');
+
+// Event handling
+editor.on('change', (content) => {
+    console.log('Code changed:', content);
+});</code></pre>
+    </div>
+
+    <!-- Load the Cotton Candy Editor -->
+    <script src="../dist/embed.min.js"></script>
+    
+    <script>
+        // Editor 1 - Basic example
+        const editor1 = new CottonCandyEditor({
+            parent: document.getElementById('editor1'),
+            theme: 'cotton-candy',
+            language: 'javascript',
+            value: `function greet(name) {
+    console.log("Hello, " + name + "!");
+    return "Welcome to Cotton Candy Editor!";
+}
+
+greet("World");`
+        });
+        
+        function getCode1() {
+            alert(editor1.getValue());
+        }
+        
+        function setCode1() {
+            editor1.setValue(`// Cotton Candy Editor Demo
+const colors = ['pink', 'purple', 'teal', 'green'];
+const theme = 'cotton-candy';
+
+colors.forEach(color => {
+    console.log(\`\${theme} theme uses \${color}\`);
+});`);
+        }
+        
+        function changeTheme1(theme) {
+            editor1.setTheme(theme);
+        }
+        
+        // Editor 2 - Language switching
+        const editor2 = new CottonCandyEditor({
+            parent: document.getElementById('editor2'),
+            theme: 'light',
+            language: 'javascript',
+            value: 'console.log("Switch languages using the dropdown!");'
+        });
+        
+        function changeLanguage2(language) {
+            const samples = {
+                javascript: 'console.log("Hello from JavaScript!");',
+                python: 'print("Hello from Python!")',
+                html: '<h1>Hello from HTML!</h1>',
+                css: 'body { color: #d63384; }',
+                java: 'System.out.println("Hello from Java!");',
+                rust: 'println!("Hello from Rust!");'
+            };
+            
+            editor2.setLanguage(language);
+            editor2.setValue(samples[language] || 'Hello World!');
+        }
+        
+        function copyCode2() {
+            navigator.clipboard.writeText(editor2.getValue())
+                .then(() => alert('Code copied to clipboard!'))
+                .catch(() => alert('Failed to copy code'));
+        }
+        
+        // Editor 3 - Read-only
+        const editor3 = new CottonCandyEditor({
+            parent: document.getElementById('editor3'),
+            theme: 'cotton-candy',
+            language: 'javascript',
+            readOnly: true,
+            value: `// This is a read-only editor
+// Perfect for displaying code examples
+class CottonCandyEditor {
+    constructor(options) {
+        this.theme = options.theme || 'cotton-candy';
+        this.language = options.language || 'javascript';
+    }
+    
+    setTheme(theme) {
+        this.theme = theme;
+        // Apply theme changes...
+    }
+}`
+        });
+        
+        // Editor 4 - Compact
+        const editor4 = new CottonCandyEditor({
+            parent: document.getElementById('editor4'),
+            theme: 'light',
+            language: 'css',
+            showLineNumbers: false,
+            value: `.cotton-candy {
+    background: #fff0f5;
+    color: #d63384;
+    border-radius: 8px;
+}`
+        });
+        
+        // Add event listeners for demo
+        editor1.on('change', (content) => {
+            console.log('Editor 1 changed');
+        });
+        
+        editor2.on('languageChange', (language) => {
+            console.log('Language changed to:', language);
+        });
+    </script>
+</body>
+</html>
