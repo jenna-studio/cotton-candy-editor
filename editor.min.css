@@ -1,0 +1,343 @@
+body {
+    font-family: sans-serif;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f0f0f0;
+}
+
+.container {
+    width: 95%;
+    max-width: 1200px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+h1 {
+    background-color: transparent;
+    text-align: center;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+}
+
+h1:hover {
+    background-color: rgba(128, 128, 128, 0.1);
+}
+
+h1[contenteditable="true"] {
+    outline: 2px solid #007acc;
+    background-color: rgba(0, 122, 204, 0.1);
+}
+
+/* H1 Colors for Different Themes */
+.theme-light h1 {
+    color: #333;
+}
+
+.theme-dracula h1 {
+    color: #f8f8f2;
+}
+
+.theme-material-dark h1 {
+    color: #eceff1;
+}
+
+.theme-nord h1 {
+    color: #eceff4;
+}
+
+.theme-solarized-dark h1 {
+    color: #fdf6e3;
+}
+
+.theme-cotton-candy h1 {
+    color: #d63384;
+}
+
+.controls {
+    padding: 15px;
+    background-color: #e9e9e9;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.controls label {
+    font-weight: bold;
+}
+
+.controls select,
+.controls button {
+    padding: 8px 12px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.controls button {
+    background-color: #909090;
+    color: white;
+    border-color: #909090;
+}
+
+.controls button:hover {
+    background-color: #636262;
+}
+
+#copy-button {
+    margin-left: auto;
+    background-color: #4e4e4e;
+    border-color: #4e4e4e;
+    color: white;
+}
+
+#copy-button:hover {
+    background-color: #3e3e3e;
+}
+
+.cm-editor {
+    height: 600px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+}
+
+.cm-editor .cm-content {
+    min-height: 600px;
+}
+
+.cm-editor .cm-focused {
+    outline: none;
+}
+
+/* Light Theme (default) */
+.theme-light .cm-editor .cm-gutters {
+    background-color: #f8f8f8;
+    color: #666;
+    border-right: 1px solid #ddd;
+}
+
+.theme-light .cm-editor .cm-activeLineGutter {
+    background-color: #e0e0e0;
+}
+
+.theme-light .cm-editor .cm-activeLine {
+    background-color: rgba(233, 242, 255, 0.3);
+}
+
+/* Dracula Theme Gutters */
+.theme-dracula .cm-editor .cm-gutters {
+    background-color: #44475a;
+    color: #6272a4;
+    border-right: 1px solid #6272a4;
+}
+
+.theme-dracula .cm-editor .cm-activeLineGutter {
+    background-color: #6272a4;
+    color: #f8f8f2;
+}
+
+/* Material Dark Theme Gutters */
+.theme-material-dark .cm-editor .cm-gutters {
+    background-color: #37474f;
+    color: #546e7a;
+    border-right: 1px solid #546e7a;
+}
+
+.theme-material-dark .cm-editor .cm-activeLineGutter {
+    background-color: #546e7a;
+    color: #eceff1;
+}
+
+/* Nord Theme Gutters */
+.theme-nord .cm-editor .cm-gutters {
+    background-color: #3b4252;
+    color: #4c566a;
+    border-right: 1px solid #4c566a;
+}
+
+.theme-nord .cm-editor .cm-activeLineGutter {
+    background-color: #4c566a;
+    color: #eceff4;
+}
+
+/* Solarized Dark Theme Gutters */
+.theme-solarized-dark .cm-editor .cm-gutters {
+    background-color: #073642;
+    color: #586e75;
+    border-right: 1px solid #586e75;
+}
+
+.theme-solarized-dark .cm-editor .cm-activeLineGutter {
+    background-color: #586e75;
+    color: #fdf6e3;
+}
+
+/* Minimap Styling for Different Themes */
+.theme-light .cm-minimap {
+    background-color: #f8f8f8;
+    border-left: 1px solid #ddd;
+}
+
+.theme-dracula .cm-minimap {
+    background-color: #44475a;
+    border-left: 1px solid #6272a4;
+}
+
+.theme-material-dark .cm-minimap {
+    background-color: #37474f;
+    border-left: 1px solid #546e7a;
+}
+
+.theme-nord .cm-minimap {
+    background-color: #3b4252;
+    border-left: 1px solid #4c566a;
+}
+
+.theme-solarized-dark .cm-minimap {
+    background-color: #073642;
+    border-left: 1px solid #586e75;
+}
+
+.theme-cotton-candy .cm-minimap {
+    background-color: #f8d7da;
+    border-left: 1px solid #d63384;
+}
+
+/* Dark Theme - overall page theme (for controls and background) */
+body.dark-theme {
+    background-color: #282a36;
+}
+
+.container.dark-theme {
+    background-color: #282a36;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+}
+
+.controls.dark-theme {
+    background-color: #44475a;
+    border-bottom: 1px solid #6272a4;
+}
+
+.controls.dark-theme label {
+    color: #f8f8f2;
+}
+
+.controls.dark-theme select,
+.controls.dark-theme button {
+    background-color: #6272a4;
+    color: #f8f8f2;
+    border-color: #8be9fd;
+}
+
+.controls.dark-theme button {
+    background-color: #50fa7b;
+    color: #282a36;
+    border-color: #50fa7b;
+}
+
+.controls.dark-theme button:hover {
+    background-color: #8be9fd;
+    color: #282a36;
+}
+
+/* Dracula theme specific */
+body.theme-dracula {
+    background-color: #282a36;
+}
+
+.container.theme-dracula {
+    background-color: #282a36;
+}
+
+/* Material Dark theme specific */
+body.theme-material-dark {
+    background-color: #263238;
+}
+
+.container.theme-material-dark {
+    background-color: #263238;
+}
+
+/* Nord theme specific */
+body.theme-nord {
+    background-color: #2e3440;
+}
+
+.container.theme-nord {
+    background-color: #2e3440;
+}
+
+/* Solarized Dark theme specific */
+body.theme-solarized-dark {
+    background-color: #002b36;
+}
+
+.container.theme-solarized-dark {
+    background-color: #002b36;
+}
+
+/* Light theme specific */
+body.theme-light {
+    background-color: #f0f0f0;
+}
+
+.container.theme-light {
+    background-color: #fff;
+}
+
+/* Cotton Candy theme specific */
+body.theme-cotton-candy {
+    background-color: #fff0f5;
+}
+
+.container.theme-cotton-candy {
+    background-color: #fff0f5;
+    box-shadow: 0 4px 8px rgba(214, 51, 132, 0.2);
+}
+
+.controls.theme-cotton-candy {
+    background-color: #f8d7da;
+    border-bottom: 1px solid #d63384;
+}
+
+.controls.theme-cotton-candy label {
+    color: #6f2c91;
+}
+
+.controls.theme-cotton-candy select,
+.controls.theme-cotton-candy button {
+    background-color: #f1c0c7;
+    color: #6f2c91;
+    border-color: #d63384;
+}
+
+.controls.theme-cotton-candy button {
+    background-color: #d63384;
+    color: #fff;
+    border-color: #d63384;
+}
+
+.controls.theme-cotton-candy button:hover {
+    background-color: #b02a5b;
+}
+
+.controls.theme-cotton-candy #copy-button {
+    background-color: #6f42c1;
+    border-color: #6f42c1;
+}
+
+.controls.theme-cotton-candy #copy-button:hover {
+    background-color: #5a32a3;
+}
+
+#editor {
+    height: 600px;
+}
