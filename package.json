@@ -22,13 +22,13 @@
         "cotton-candy",
         "embeddable"
     ],
-    "author": "Your Name <your.email@example.com>",
+    "author": "Jenna Studio <jenna@jenna-studio.dev>",
     "license": "MIT",
     "repository": {
         "type": "git",
-        "url": "https://github.com/yourusername/cotton-candy-editor.git"
+        "url": "https://github.com/jenna-studio/cotton-candy-editor.git"
     },
-    "homepage": "https://yourusername.github.io/cotton-candy-editor",
+    "homepage": "https://jenna-studio.github.io/cotton-candy-editor",
     "type": "commonjs",
     "dependencies": {
         "@babel/runtime": "^7.27.6",
