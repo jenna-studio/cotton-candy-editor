@@ -17,7 +17,7 @@ A beautiful, modern web-based code editor built with CodeMirror 6. Features mult
 
 ### Online Demo
 
-Visit: [Your GitHub Pages URL] (to be deployed)
+Visit: [https://jenna-studio.github.io/cotton-candy-editor](https://jenna-studio.github.io/cotton-candy-editor) (to be deployed)
 
 ### Local Development
 
