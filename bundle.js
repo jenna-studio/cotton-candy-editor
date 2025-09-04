@@ -33828,8 +33828,8 @@ greet("World");
       }
       var editorState = EditorState.create({
         doc: initialDoc,
-        extensions: getEditorExtensions(javascript(), [])
-        // Start with light theme (no specific theme extension)
+        extensions: getEditorExtensions(javascript(), cottonCandy)
+        // Start with cotton candy theme
       });
       var editorParent = document.getElementById("editor");
       if (!editorParent) {
@@ -33843,6 +33843,12 @@ greet("World");
       });
       console.log("EditorView created:", editorView);
       window.editorView = editorView;
+      var body = document.body;
+      var container = document.querySelector(".container");
+      var controls = document.querySelector(".controls");
+      body.classList.add("theme-cotton-candy");
+      if (container) container.classList.add("theme-cotton-candy");
+      if (controls) controls.classList.add("theme-cotton-candy");
       var languageSelect = document.getElementById("language-select");
       if (languageSelect) {
         languageSelect.addEventListener("change", (event) => {
@@ -33923,17 +33929,17 @@ greet("World");
         themeSelect.addEventListener("change", (event) => {
           console.log("Theme change event fired.");
           const theme2 = event.target.value;
-          const body = document.body;
-          const container = document.querySelector(".container");
-          const controls = document.querySelector(".controls");
+          const body2 = document.body;
+          const container2 = document.querySelector(".container");
+          const controls2 = document.querySelector(".controls");
           let newThemeExtension;
-          body.classList.remove("dark-theme", "theme-dracula", "theme-material-dark", "theme-nord", "theme-solarized-dark", "theme-light", "theme-cotton-candy");
-          container.classList.remove("dark-theme", "theme-dracula", "theme-material-dark", "theme-nord", "theme-solarized-dark", "theme-light", "theme-cotton-candy");
-          controls.classList.remove("dark-theme", "theme-dracula", "theme-material-dark", "theme-nord", "theme-solarized-dark", "theme-light", "theme-cotton-candy");
+          body2.classList.remove("dark-theme", "theme-dracula", "theme-material-dark", "theme-nord", "theme-solarized-dark", "theme-light", "theme-cotton-candy");
+          container2.classList.remove("dark-theme", "theme-dracula", "theme-material-dark", "theme-nord", "theme-solarized-dark", "theme-light", "theme-cotton-candy");
+          controls2.classList.remove("dark-theme", "theme-dracula", "theme-material-dark", "theme-nord", "theme-solarized-dark", "theme-light", "theme-cotton-candy");
           if (theme2 === "dracula" || theme2 === "material-dark" || theme2 === "nord" || theme2 === "solarized-dark") {
-            body.classList.add("dark-theme", `theme-${theme2}`);
-            container.classList.add("dark-theme", `theme-${theme2}`);
-            controls.classList.add("dark-theme", `theme-${theme2}`);
+            body2.classList.add("dark-theme", `theme-${theme2}`);
+            container2.classList.add("dark-theme", `theme-${theme2}`);
+            controls2.classList.add("dark-theme", `theme-${theme2}`);
             switch (theme2) {
               case "dracula":
                 newThemeExtension = dracula;
@@ -33949,14 +33955,14 @@ greet("World");
                 break;
             }
           } else if (theme2 === "cotton-candy") {
-            body.classList.add("theme-cotton-candy");
-            container.classList.add("theme-cotton-candy");
-            controls.classList.add("theme-cotton-candy");
+            body2.classList.add("theme-cotton-candy");
+            container2.classList.add("theme-cotton-candy");
+            controls2.classList.add("theme-cotton-candy");
             newThemeExtension = cottonCandy;
           } else {
-            body.classList.add("theme-light");
-            container.classList.add("theme-light");
-            controls.classList.add("theme-light");
+            body2.classList.add("theme-light");
+            container2.classList.add("theme-light");
+            controls2.classList.add("theme-light");
             newThemeExtension = [];
           }
           const currentLanguage = languageSelect.value;

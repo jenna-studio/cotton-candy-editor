@@ -258,10 +258,10 @@ function getEditorExtensions(languageExtension, themeExtension) {
     return extensions;
 }
 
-// Initial editor state with JavaScript and light theme
+// Initial editor state with JavaScript and cotton candy theme
 let editorState = EditorState.create({
     doc: initialDoc,
-    extensions: getEditorExtensions(javascript(), []), // Start with light theme (no specific theme extension)
+    extensions: getEditorExtensions(javascript(), cottonCandy), // Start with cotton candy theme
 });
 
 const editorParent = document.getElementById("editor");
@@ -280,6 +280,14 @@ console.log("EditorView created:", editorView);
 
 // Make editorView globally accessible for debugging
 window.editorView = editorView;
+
+// Apply initial cotton candy theme to page elements
+const body = document.body;
+const container = document.querySelector(".container");
+const controls = document.querySelector(".controls");
+body.classList.add("theme-cotton-candy");
+if (container) container.classList.add("theme-cotton-candy");
+if (controls) controls.classList.add("theme-cotton-candy");
 
 // Language Switching
 const languageSelect = document.getElementById("language-select");
