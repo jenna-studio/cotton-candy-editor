@@ -57,7 +57,8 @@ h1[contenteditable="true"] {
 }
 
 .theme-cotton-candy h1 {
-    color: #d63384;
+    color: #ff1493;
+    font-weight: bold;
 }
 
 .controls {
@@ -208,7 +209,7 @@ h1[contenteditable="true"] {
 
 .theme-cotton-candy .cm-minimap {
     background-color: #f8d7da;
-    border-left: 1px solid #d63384;
+    border-left: 1px solid #ff1493;
 }
 
 /* Dark Theme - overall page theme (for controls and background) */
@@ -300,42 +301,87 @@ body.theme-cotton-candy {
 
 .container.theme-cotton-candy {
     background-color: #fff0f5;
-    box-shadow: 0 4px 8px rgba(214, 51, 132, 0.2);
+    box-shadow: 0 2px 8px rgba(255, 20, 147, 0.3);
 }
 
 .controls.theme-cotton-candy {
     background-color: #f8d7da;
-    border-bottom: 1px solid #d63384;
+    border-bottom: 1px solid #ff1493;
 }
 
 .controls.theme-cotton-candy label {
-    color: #6f2c91;
+    color: #9370db;
+    font-weight: bold;
+    text-align: right;
+    text-wrap: nowrap;
 }
 
 .controls.theme-cotton-candy select,
 .controls.theme-cotton-candy button {
     background-color: #f1c0c7;
-    color: #6f2c91;
-    border-color: #d63384;
+    color: #613aaf;
+    border-color: #ff1493;
+    font-weight: 600;
 }
 
 .controls.theme-cotton-candy button {
-    background-color: #d63384;
+    background-color: #ff1493;
     color: #fff;
-    border-color: #d63384;
+    border-color: #ff1493;
+    font-weight: bold;
 }
 
 .controls.theme-cotton-candy button:hover {
-    background-color: #b02a5b;
+    background-color: #dc1478;
 }
 
 .controls.theme-cotton-candy #copy-button {
-    background-color: #6f42c1;
-    border-color: #6f42c1;
+    background-color: #9370db;
+    border-color: #9370db;
 }
 
 .controls.theme-cotton-candy #copy-button:hover {
-    background-color: #5a32a3;
+    background-color: #7b68ee;
+}
+
+/* Minimap selection highlight color (change to yellow) */
+.cm-minimap .cm-selection {
+    background-color: #ffeb3b !important; /* Yellow */
+}
+
+/* Also tint selection matches in the minimap to yellow */
+.cm-minimap .cm-selectionMatch,
+.cm-minimap .cm-searchMatch {
+    background-color: #fff176 !important; /* Light yellow */
+}
+
+.cm-minimap .cm-cursor-secondary,
+.cm-minimap .cm-search {
+    background-color: transparent !important;
+}
+
+/* Custom Scrollbar for Cotton Candy Theme */
+.theme-cotton-candy ::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+}
+
+.theme-cotton-candy ::-webkit-scrollbar-track {
+    background: #f8d7da;
+}
+
+.theme-cotton-candy ::-webkit-scrollbar-thumb {
+    background-color: #ff1493;
+    border-radius: 10px;
+    border: 3px solid #f8d7da;
+}
+
+.theme-cotton-candy ::-webkit-scrollbar-thumb:hover {
+    background-color: #dc1478;
+}
+
+.theme-cotton-candy ::-webkit-scrollbar-corner {
+    background: #f8d7da;
 }
 
 #editor {

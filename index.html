@@ -5,17 +5,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Advanced CodeMirror Editor</title>
+    <link rel="stylesheet" href="dist/editor.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
 
-<body>
-    <div class="container">
+<body class="theme-cotton-candy">
+    <div class="container theme-cotton-candy">
         <h1 id="file-name-display">File Name</h1>
-        <div class="controls">
+        <div class="controls theme-cotton-candy">
             <label for="language-select">Language:</label>
             <select id="language-select">
-                <option value="javascript">JavaScript</option>
                 <option value="python">Python</option>
+                <option value="javascript">JavaScript</option>
                 <option value="html">HTML</option>
                 <option value="css">CSS</option>
                 <option value="java">Java</option>
@@ -38,13 +39,37 @@
                 <option value="solarized-dark">Solarized Dark</option>
             </select>
 
+            <label for="font-size-select">Font Size:</label>
+            <select id="font-size-select">
+                <option value="12px">12px</option>
+                <option value="14px" selected>14px</option>
+                <option value="16px">16px</option>
+                <option value="18px">18px</option>
+                <option value="20px">20px</option>
+            </select>
+
+            <label for="font-family-select">Font Family:</label>
+            <select id="font-family-select">
+                <option value="'Fira Code', monospace" selected>Fira Code</option>
+                <option value="'JetBrains Mono', monospace">JetBrains Mono</option>
+                <option value="Menlo, monospace">Menlo</option>
+                <option value="'Source Code Pro', monospace">Source Code Pro</option>
+            </select>
+
             <button id="save-button">Save File</button>
             <button id="format-button">Format Code</button>
             <button id="copy-button">Copy Code</button>
         </div>
         <div id="editor"></div>
     </div>
-    <script src="bundle.js"></script>
+    <script src="dist/editor.min.js"></script>
+    <script>
+        // Ensure the selected theme (and language) apply on load
+        window.addEventListener('DOMContentLoaded', () => {
+            const themeSelect = document.getElementById('theme-select');
+            if (themeSelect) themeSelect.dispatchEvent(new Event('change'));
+        });
+    </script>
 </body>
 
 </html>
