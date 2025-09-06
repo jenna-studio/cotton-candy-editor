@@ -77,6 +77,7 @@ const header = document.querySelector("h1");
 const language = new Compartment();
 const theme = new Compartment();
 const editorTheme = new Compartment();
+const linterCompartment = new Compartment();
 
 // Cotton Candy Theme Definition
 const cottonCandyTheme = EditorView.theme(
@@ -201,32 +202,62 @@ const pythonKeywordHighlight = HighlightStyle.define([
 ]);
 
 // Initial editor content
-const initialDoc = `function greet(name) {
-  console.log("Hello, " + name + "!");
-}
+const initialDoc = `#!/usr/bin/env python3
 
-greet("World");
+import sys
+from datetime import datetime
+
+class Greeter:
+    def __init__(self, name: str):
+        self.name = name
+
+    def greet(self) -> str:
+        return f"Hello, {self.name}! Today is {datetime.now():%A, %B %d, %Y}."
+
+def main() -> int:
+    name = sys.argv[1] if len(sys.argv) > 1 else "World"
+    greeter = Greeter(name)
+    print(greeter.greet())
+    return 0
+
+if __name__ == "__main__":
+    raise SystemExit(main())
 `;
 
 // Example completion source
 const myCompletions = [
-    { label: "function", type: "keyword" },
-    { label: "const", type: "keyword" },
-    { label: "let", type: "keyword" },
-    { label: "var", type: "keyword" },
-    { label: "console.log", type: "function" },
+    { label: "def", type: "keyword" },
+    { label: "class", type: "keyword" },
+    { label: "import", type: "keyword" },
+    { label: "from", type: "keyword" },
     { label: "return", type: "keyword" },
     { label: "if", type: "keyword" },
+    { label: "elif", type: "keyword" },
     { label: "else", type: "keyword" },
     { label: "for", type: "keyword" },
     { label: "while", type: "keyword" },
-    { label: "class", type: "keyword" },
-    { label: "import", type: "keyword" },
-    { label: "export", type: "keyword" },
-    { label: "document", type: "variable" },
-    { label: "window", type: "variable" },
-    { label: "helloWorld", type: "variable" },
-    { label: "myVariable", type: "variable" },
+    { label: "try", type: "keyword" },
+    { label: "except", type: "keyword" },
+    { label: "finally", type: "keyword" },
+    { label: "with", type: "keyword" },
+    { label: "as", type: "keyword" },
+    { label: "print", type: "function" },
+    { label: "len", type: "function" },
+    { label: "range", type: "function" },
+    { label: "str", type: "function" },
+    { label: "int", type: "function" },
+    { label: "float", type: "function" },
+    { label: "list", type: "function" },
+    { label: "dict", type: "function" },
+    { label: "tuple", type: "function" },
+    { label: "set", type: "function" },
+    { label: "True", type: "variable" },
+    { label: "False", type: "variable" },
+    { label: "None", type: "variable" },
+    { label: "self", type: "variable" },
+    { label: "__init__", type: "function" },
+    { label: "__str__", type: "function" },
+    { label: "__repr__", type: "function" },
 ];
 
 function myCompletionSource(context) {
@@ -423,7 +454,7 @@ const initialState = EditorState.create({
         language.of(getLanguageExtension()),
         theme.of(getThemeExtension()),
         editorTheme.of(createEditorTheme(fontSizeSelect.value, fontFamilySelect.value)),
-        javascriptLinter, // Initially add JS linter
+        linterCompartment.of([]), // Start with no linter
     ],
 });
 
@@ -448,11 +479,12 @@ languageSelect.addEventListener("change", () => {
     // Add or remove linter based on language
     if (lang === "javascript") {
         editorView.dispatch({
-            effects: StateEffect.append.of(javascriptLinter),
+            effects: linterCompartment.reconfigure([javascriptLinter]),
         });
     } else {
-        // This is a simplified way to remove the linter.
-        // A more robust solution might involve compartments for linters.
+        editorView.dispatch({
+            effects: linterCompartment.reconfigure([]), // Remove linter for other languages
+        });
     }
 
     // For Python, add the specific highlight style
@@ -536,6 +568,7 @@ saveButton.addEventListener("click", () => {
 
 async function formatWithPrettierOrFallback(content, language) {
     const lang = (language || "").toLowerCase();
+
     // Prettier plugin set
     const plugins = [
         prettierPluginBabel,
@@ -548,20 +581,31 @@ async function formatWithPrettierOrFallback(content, language) {
         prettierPluginYaml,
         prettierPluginGraphql,
     ];
+
+    // Enhanced language to parser mapping
     const parserByLang = {
         javascript: "babel",
+        js: "babel",
         typescript: "typescript",
+        ts: "typescript",
         html: "html",
         css: "css",
+        scss: "css",
+        less: "css",
         markdown: "markdown",
+        md: "markdown",
         json: "json",
         yaml: "yaml",
+        yml: "yaml",
         graphql: "graphql",
     };
+
     const parser = parserByLang[lang] || null;
+
+    // Try Prettier formatting for supported languages
     if (parser) {
         try {
-            return await prettier.format(content, {
+            const formatted = await prettier.format(content, {
                 parser,
                 plugins,
                 semi: true,
@@ -572,25 +616,78 @@ async function formatWithPrettierOrFallback(content, language) {
                 bracketSpacing: true,
                 proseWrap: "never",
             });
+            return formatted;
         } catch (e) {
-            console.warn("Prettier failed; falling back:", e?.message || e);
+            console.warn(`Prettier formatting failed for ${lang}:`, e?.message || e);
+            // Fall through to basic formatting
         }
     }
-    // Fallbacks for unsupported or failed cases
-    if (lang === "python") return formatPython(content);
+
+    // Use custom formatters for specific languages
+    if (lang === "python") {
+        return formatPython(content);
+    }
+
+    // Use basic formatter for all other cases
     return basicFormat(content, lang);
 }
 
 formatButton.addEventListener("click", async () => {
     console.log("Format button clicked.");
-    const content = editorView.state.doc.toString();
-    const language = languageSelect ? languageSelect.value : "javascript";
-    const formattedContent = await formatWithPrettierOrFallback(content, language);
-    if (typeof formattedContent === "string" && formattedContent.length) {
-        editorView.dispatch({
-            changes: { from: 0, to: editorView.state.doc.length, insert: formattedContent },
-        });
-        console.log("Code formatted (Prettier or fallback)");
+
+    try {
+        const content = editorView.state.doc.toString();
+        const language = languageSelect ? languageSelect.value : "javascript";
+
+        // Check if content is empty
+        if (!content || content.trim().length === 0) {
+            console.log("No content to format");
+            return;
+        }
+
+        console.log(`Formatting ${language} code...`);
+        const formattedContent = await formatWithPrettierOrFallback(content, language);
+
+        // Validate formatted content
+        if (typeof formattedContent === "string" && formattedContent.trim().length > 0) {
+            // Only update if the content actually changed
+            if (formattedContent !== content) {
+                editorView.dispatch({
+                    changes: { from: 0, to: editorView.state.doc.length, insert: formattedContent },
+                });
+                console.log(`Code formatted successfully using ${language} formatter`);
+
+                // Visual feedback
+                const originalText = formatButton.textContent;
+                formatButton.textContent = "Formatted!";
+                formatButton.style.backgroundColor = "#50fa7b";
+                formatButton.style.color = "#282a36";
+
+                setTimeout(() => {
+                    formatButton.textContent = originalText;
+                    formatButton.style.backgroundColor = "";
+                    formatButton.style.color = "";
+                }, 1500);
+            } else {
+                console.log("Code is already properly formatted");
+            }
+        } else {
+            console.warn("Formatting failed or returned empty content");
+        }
+    } catch (error) {
+        console.error("Error during formatting:", error);
+
+        // Show error feedback to user
+        const originalText = formatButton.textContent;
+        formatButton.textContent = "Format Failed";
+        formatButton.style.backgroundColor = "#ff5555";
+        formatButton.style.color = "white";
+
+        setTimeout(() => {
+            formatButton.textContent = originalText;
+            formatButton.style.backgroundColor = "";
+            formatButton.style.color = "";
+        }, 2000);
     }
 });
 
@@ -754,176 +851,236 @@ function basicFormat(content, language) {
 function formatPython(content) {
     const IND = "    ";
     const lines = content.split(/\r?\n/);
-    let blockIndent = 0; // indentation from Python blocks
-    let parenDepth = 0; // continuation indentation when inside (), [], {}
-    let backslashCont = false; // line continuation with \
-    let inTriple = false; // inside a triple-quoted string
+    let blockIndent = 0; // current indentation level
+    let classLevel = 0; // track if we're inside a class
+    let parenDepth = 0; // parenthesis/bracket depth for continuation
+    let backslashCont = false; // line continuation with backslash
+    let inTriple = false; // inside triple-quoted string
     let tripleQuote = null; // """ or '''
 
     const isBlank = (s) => /^\s*$/.test(s);
-    const startsWith = (s, re) => re.test(s);
 
-    const opensBlock = (trim) =>
-        /^(async\s+def|def|class|if|for|while|try|with|match|case)\b|:\s*$/.test(trim);
-    const dedentKeywords = /^(elif\b|else\b|except\b|finally\b|case\b)/;
+    // Keywords that increase indentation after them
+    const blockStartKeywords =
+        /^(def|class|if|elif|else|for|while|try|except|finally|with|match|case|async\s+def)\b/;
+    // Keywords that should be at same level as their opening statement
+    const dedentKeywords = /^(elif|else|except|finally|case)\b/;
+    // Method definition pattern
+    const methodDefPattern = /^def\s+\w+\s*\(/;
+    // Class definition pattern
+    const classDefPattern = /^class\s+\w+/;
 
     const stripComment = (text) => {
-        let inS = false,
-            quote = null,
-            esc = false;
+        let inString = false;
+        let quote = null;
+        let escaped = false;
+
         for (let i = 0; i < text.length; i++) {
             const ch = text[i];
-            if (esc) {
-                esc = false;
+
+            if (escaped) {
+                escaped = false;
                 continue;
             }
-            if (inS) {
+
+            if (inString) {
                 if (ch === "\\") {
-                    esc = true;
+                    escaped = true;
                     continue;
                 }
                 if (ch === quote) {
-                    inS = false;
+                    inString = false;
                     quote = null;
                 }
                 continue;
             }
+
             if (ch === '"' || ch === "'") {
-                inS = true;
+                // Check for triple quotes
+                if (i + 2 < text.length && text.substr(i, 3) === ch.repeat(3)) {
+                    // Handle triple quote (skip for comment detection)
+                    i += 2;
+                    continue;
+                }
+                inString = true;
                 quote = ch;
                 continue;
             }
-            if (ch === "#") return text.slice(0, i);
+
+            if (ch === "#") {
+                return text.slice(0, i).trimEnd();
+            }
         }
+
         return text;
     };
 
-    const updateTripleState = (trim) => {
-        // Count occurrences of triple quotes not escaped
-        const countUnescaped = (s, token) => {
-            let count = 0;
-            for (let i = 0; i <= s.length - token.length; i++) {
-                if (s.slice(i, i + token.length) === token) {
-                    // check if escaped by backslash (rough heuristic)
-                    const prev = s[i - 1];
-                    if (prev !== "\\") count++;
-                    i += token.length - 1;
-                }
-            }
-            return count;
-        };
-        if (!inTriple) {
-            const d3 = countUnescaped(trim, '"""');
-            const s3 = countUnescaped(trim, "'''");
-            if (d3 % 2 === 1) {
-                inTriple = true;
-                tripleQuote = '"""';
-                return;
-            }
-            if (s3 % 2 === 1) {
-                inTriple = true;
-                tripleQuote = "'''";
-                return;
-            }
-        } else {
-            if (tripleQuote && trim.includes(tripleQuote)) {
-                // Close if odd number of appearances on this line
-                const c = (
-                    trim.match(
-                        new RegExp(tripleQuote.replace(/([*+?^${}()|[\]\\.])/g, "\\$1"), "g")
-                    ) || []
-                ).length;
-                if (c % 2 === 1) {
-                    inTriple = false;
-                    tripleQuote = null;
-                }
-            }
-        }
-    };
-
     const parenDelta = (text) => {
-        // Compute net brackets ignoring strings and comments
-        let inS = false,
-            quote = null,
-            esc = false;
-        let open = 0,
-            close = 0;
+        let inString = false;
+        let quote = null;
+        let escaped = false;
+        let open = 0;
+        let close = 0;
+
         for (let i = 0; i < text.length; i++) {
             const ch = text[i];
-            if (esc) {
-                esc = false;
+
+            if (escaped) {
+                escaped = false;
                 continue;
             }
-            if (inS) {
+
+            if (inString) {
                 if (ch === "\\") {
-                    esc = true;
+                    escaped = true;
                     continue;
                 }
                 if (ch === quote) {
-                    inS = false;
+                    inString = false;
                     quote = null;
                 }
                 continue;
             }
+
             if (ch === '"' || ch === "'") {
-                inS = true;
+                inString = true;
                 quote = ch;
                 continue;
             }
-            if (ch === "#") break;
+
+            if (ch === "#") break; // Ignore parentheses in comments
+
             if (ch === "(" || ch === "[" || ch === "{") open++;
             else if (ch === ")" || ch === "]" || ch === "}") close++;
         }
+
         return open - close;
     };
 
+    const updateTripleQuoteState = (line) => {
+        const doubleTriple = /"""/g;
+        const singleTriple = /'''/g;
+
+        // Count triple quotes (simple approach)
+        const doubleCount = (line.match(doubleTriple) || []).length;
+        const singleCount = (line.match(singleTriple) || []).length;
+
+        if (!inTriple) {
+            if (doubleCount % 2 === 1) {
+                inTriple = true;
+                tripleQuote = '"""';
+            } else if (singleCount % 2 === 1) {
+                inTriple = true;
+                tripleQuote = "'''";
+            }
+        } else {
+            if (tripleQuote === '"""' && doubleCount % 2 === 1) {
+                inTriple = false;
+                tripleQuote = null;
+            } else if (tripleQuote === "'''" && singleCount % 2 === 1) {
+                inTriple = false;
+                tripleQuote = null;
+            }
+        }
+    };
+
     const out = [];
+
     for (let idx = 0; idx < lines.length; idx++) {
         const raw = lines[idx];
-        const noLead = raw.replace(/^[\s\u00A0]+/, "");
-        const trimmed = noLead.trimEnd();
-        const onlySpace = isBlank(trimmed);
+        const noLeadingWS = raw.replace(/^[\s\u00A0]+/, "");
+        const trimmed = noLeadingWS.trimEnd();
 
-        // Update triple-quoted string state before indent logic
-        updateTripleState(trimmed);
-
-        // Determine pre-dedent
-        let preDedent = 0;
-        if (!inTriple) {
-            if (startsWith(trimmed, dedentKeywords)) preDedent++;
-        }
-
-        // Continuation indent: +1 when inside parens or after backslash
-        let contIndent = parenDepth > 0 || backslashCont ? 1 : 0;
-        // If line starts with a closing bracket, reduce continuation by 1
-        if (/^[\]\)\}]/.test(trimmed) && parenDepth > 0) contIndent = Math.max(0, contIndent - 1);
-
-        // Compute final indent
-        let level = Math.max(0, blockIndent - preDedent) + contIndent;
-        if (onlySpace) {
+        // Skip empty lines
+        if (isBlank(trimmed)) {
             out.push("");
-        } else if (inTriple) {
-            // Keep docstring content aligned to current block indent
-            out.push(IND.repeat(level) + trimmed);
-        } else {
-            out.push(IND.repeat(level) + trimmed);
+            continue;
         }
 
-        // Update block indent after emitting line
-        if (!inTriple) {
-            const effective = stripComment(trimmed).trimEnd();
-            const opens = opensBlock(effective) || /:\s*$/.test(effective);
-            const endsWithColon = /:\s*$/.test(effective) || /^(def|class)\b/.test(effective); // be forgiving even if missing ':'
-            if (
-                opens ||
-                /^(async\s+def|def|class|if|for|while|try|with|match|case)\b/.test(effective)
-            ) {
-                blockIndent++;
-            }
-            // Update paren depth for continuation indent on next lines
-            parenDepth = Math.max(0, parenDepth + parenDelta(effective));
-            backslashCont = /\\\s*$/.test(effective);
+        // Update triple quote state
+        updateTripleQuoteState(trimmed);
+
+        // If we're in a triple-quoted string, preserve indentation relative to block
+        if (inTriple) {
+            out.push(IND.repeat(blockIndent) + trimmed);
+            continue;
         }
+
+        // Handle special cases for class methods
+        let currentIndent = blockIndent;
+        const effective = stripComment(trimmed);
+
+        // Handle class definition
+        if (classDefPattern.test(effective)) {
+            classLevel = blockIndent;
+            currentIndent = blockIndent;
+        }
+        // Handle method definition - should be at class level + 1
+        else if (methodDefPattern.test(effective) && classLevel >= 0) {
+            currentIndent = classLevel + 1;
+            blockIndent = classLevel + 1;
+        }
+        // Handle dedent keywords (elif, else, except, finally)
+        else if (dedentKeywords.test(trimmed) && blockIndent > 0) {
+            currentIndent = blockIndent - 1;
+        }
+        // Handle function definitions outside of classes
+        else if (/^def\s+\w+/.test(effective) && classLevel < 0) {
+            currentIndent = 0; // Top-level functions should be at indent 0
+            blockIndent = 0;
+        }
+
+        // Handle continuation indentation (inside parentheses or after backslash)
+        let contIndent = 0;
+        if (parenDepth > 0 || backslashCont) {
+            contIndent = 1;
+        }
+
+        // Reduce continuation if line starts with closing bracket
+        if (/^[\)\]\}]/.test(trimmed) && parenDepth > 0) {
+            contIndent = Math.max(0, contIndent - 1);
+        }
+
+        const finalIndent = Math.max(0, currentIndent + contIndent);
+        out.push(IND.repeat(finalIndent) + trimmed);
+
+        // Update state for next iteration
+
+        // Check if this line ends with colon (starts a new block)
+        const endsWithColon = /:[\s]*$/.test(effective);
+
+        // Update block indent based on what we just processed
+        if (classDefPattern.test(effective)) {
+            blockIndent = currentIndent + 1;
+            classLevel = currentIndent;
+        } else if (methodDefPattern.test(effective)) {
+            blockIndent = currentIndent + 1;
+        } else if (dedentKeywords.test(trimmed) && blockIndent > 0) {
+            blockIndent = blockIndent - 1;
+        } else if (
+            endsWithColon &&
+            !methodDefPattern.test(effective) &&
+            !classDefPattern.test(effective)
+        ) {
+            blockIndent++;
+        } else if (blockStartKeywords.test(effective) && endsWithColon) {
+            blockIndent++;
+        }
+
+        // Reset class level when we go back to top level
+        if (
+            currentIndent === 0 &&
+            !classDefPattern.test(effective) &&
+            !methodDefPattern.test(effective)
+        ) {
+            if (!/^(import|from|#|\s*$)/.test(effective)) {
+                classLevel = -1;
+            }
+        }
+
+        // Update parenthesis depth and backslash continuation
+        parenDepth = Math.max(0, parenDepth + parenDelta(effective));
+        backslashCont = /\\\s*$/.test(effective);
     }
 
     return out.join("\n");

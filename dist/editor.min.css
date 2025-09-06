@@ -219,7 +219,7 @@ body.dark-theme {
 
 .container.dark-theme {
     background-color: #282a36;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
 }
 
 .controls.dark-theme {
@@ -344,15 +344,15 @@ body.theme-cotton-candy {
     background-color: #7b68ee;
 }
 
-/* Minimap selection highlight color (change to yellow) */
+/* Minimap selection highlight color (changed to light pink) */
 .cm-minimap .cm-selection {
-    background-color: #ffeb3b !important; /* Yellow */
+    background-color: #ffb3d6 !important; /* Light pink */
 }
 
-/* Also tint selection matches in the minimap to yellow */
+/* Also tint selection matches in the minimap to light pink */
 .cm-minimap .cm-selectionMatch,
 .cm-minimap .cm-searchMatch {
-    background-color: #fff176 !important; /* Light yellow */
+    background-color: #ffc0e3 !important; /* Lighter pink */
 }
 
 .cm-minimap .cm-cursor-secondary,
